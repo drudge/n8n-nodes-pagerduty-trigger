@@ -1,12 +1,14 @@
 {
   "name": "n8n-nodes-pagerduty-trigger",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "n8n Trigger node for PagerDuty",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "pagerduty",
+    "incident"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/drudge/n8n-nodes-pagerduty-trigger",
   "author": {
     "name": "Nicholas Penree",
     "email": "nick@penree.com"

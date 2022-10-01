@@ -1,0 +1,28 @@
+{
+	"node": "n8n-nodes-pagerduty-trigger.pagerDutyTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Communication", "Development"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.n8n.io/credentials/pagerDuty"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/drudge/n8n-nodes-pagerduty-trigger"
+			}
+		],
+		"generic": [
+			{
+				"label": "PagerDuty: Webhook Subscriptions Guide",
+				"url": "https://support.pagerduty.com/docs/webhooks"
+			},
+			{
+				"label": "PagerDuty: Webhook Subscriptions API",
+				"url": "https://developer.pagerduty.com/api-reference/b3A6MjkyNDc4NA-create-a-webhook-subscription"
+			}
+		]
+	}
+}

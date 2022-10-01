@@ -1,3 +1,5 @@
+Copyright 2022 Nicholas Penree <nick@penree.com>
+
 Copyright 2022 n8n
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of

@@ -4,6 +4,7 @@
 
 This trigger node allows you to receive updates in your [n8n](https://www.n8n.io) workflows when significant events happen in your PagerDuty account. For example, when an incident triggers, escalates or resolves. See the `Events Supported` support section below for a full list of events.
 
+![PagerDuty Trigger node screenshot](./images/example.png)
 ## How to install
 
 ### Community Nodes (Recommended)
@@ -35,8 +36,9 @@ For Docker-based deployments, add the following line before the font installatio
 ## Credentials
 
 You can find authentication information for this node [here](https://docs.n8n.io/integrations/builtin/credentials/pagerduty/).
+## Events
 
-## Events Supported
+You can customize which [event types](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#event-types) will trigger the node. A subset of all event types may be provided if you are only interested in a limited set of events.
 
 The following resources and event types are available using [PagerDuty's Webhook Subscriptions API](https://developer.pagerduty.com/api-reference/b3A6MjkyNDc4NA-create-a-webhook-subscription). 
 
@@ -70,11 +72,12 @@ The following resources and event types are available using [PagerDuty's Webhook
 Additional event types may be added to this list over time.
 
 
+## Filtering Events Using Scopes
+
+The **Scope** parameter specifies which source of events will trigger the node. There are currently three types of scopes that can be applied: `Service`, `Team` and `Account`. By default, the `Account` scope is used and all configured events for the account will trigger the node.
+
+In the case of incident events, the different scopes will only trigger for the incidents that are associated with the service or team. For example: a trigger node with a service scope would only trigger for all incidents belonging to the specified service.
 ## Options
-
-### Custom Headers
-
-You can define optional headers that will be passed along with the payload to the destination URL. The header values are redacted in GET requests, but are not redacted on the webhook when delivered to trigger node. All header names must be unique.
 
 ### Include Headers and Query Parameters
 
@@ -82,15 +85,15 @@ By default, you'll receive the event body as your JSON. You can choose whether t
 
 <details>
 <summary>
-<strong>Default JSON</strong>
+<strong>Body-only (Default)</strong>
 </summary>
 <pre>
 {
 	"event": {
-		"id": "01D8FYIJ20I4GKWYN0MVIPOX2F",
+		"id": "01D8FYLHB5WAOASD!BWY4P3M",
 		"event_type": "pagey.ping",
 		"resource_type": "pagey",
-		"occurred_at": "2022-10-01T02:29:54.441Z",
+		"occurred_at": "2022-10-01T02:30:53.852Z",
 		"agent": null,
 		"client": null,
 		"data": {
@@ -110,7 +113,7 @@ By default, you'll receive the event body as your JSON. You can choose whether t
 {
 	"body": {
 		"event": {
-			"id": "01D8FYLHB5WAOTUKW6FBWY4P3M",
+			"id": "01D8FYLHB5WAOASD!BWY4P3M",
 			"event_type": "pagey.ping",
 			"resource_type": "pagey",
 			"occurred_at": "2022-10-01T02:30:53.852Z",
@@ -123,23 +126,32 @@ By default, you'll receive the event body as your JSON. You can choose whether t
 		}
 	},
 	"headers": {
-		"x-forwarded-for": "52.89.71.166",
-		"x-forwarded-proto": "https",
-		"x-forwarded-port": "443",
-		"host": "n8n.fye.dev",
-		"x-amzn-trace-id": "Root=1-6337a65e-4e98a58314bd053846fdf500",
+		"host": "n8n.host.dev",
 		"content-length": "228",
 		"accept": "application/json",
-		"x-webhook-id": "a3d6149f-7577-4e8c-bc7c-e0e80e84dda5",
+		"x-webhook-id": "a3d6149f-7577-4e8c-bc7c-e0e80e1s3a5",
 		"user-agent": "PagerDuty-Webhook/V3.0",
-		"x-pagerduty-signature": "v1=6786170fa823ba565f041fb9186719f29907e6460d33c2ce233abf676bdfe9e1",
-		"x-webhook-subscription": "PXSUI9H",
+		"x-pagerduty-signature": "v1=6786170fa823ba565f041fb9186719f29907e6460dssss2ce233abf676bdfe9e1",
+		"x-webhook-subscription": "PXSUIZH",
 		"content-type": "application/json"
 	},
 	"query": {}
 }
 </pre>
 </details>
+
+### Custom Headers
+
+You can define optional headers that will be passed along with the payload to the destination URL. The header values are redacted in GET requests, but are not redacted on the webhook when delivered to trigger node. All header names must be unique.
+
+When sending custom headers, the JSON for the event will have headers and query parameters will always included.
+## Troubleshooting / Testing
+
+If you're having issues with the webhook subscriptions, you can review the webhook subscriptions in PagerDuty using the **Integrations** > **Generic Webhooks (v3)** menu.
+
+You send also send a test event to your listening trigger node here as well:
+
+![Manage webhook screenshot](./images/manage.png)
 
 ## License
 

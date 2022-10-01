@@ -1,47 +1,166 @@
+# PagerDuty Trigger for n8n
+
 ![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
 
-# n8n-nodes-pagerduty-trigger
+This trigger node allows you to receive updates in your [n8n](https://www.n8n.io) workflows when significant events happen in your PagerDuty account. For example, when an incident triggers, escalates or resolves. See the `Events Supported` support section below for a full list of events.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](n8n.io). It includes the node linter and other dependencies.
+## How to install
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+### Community Nodes (Recommended)
 
-## Prerequisites
+For users on n8n v0.187+, your instance owner can install this node from [Community Nodes](https://docs.n8n.io/integrations/community-nodes/installation/).
 
-You need the following installed on your development machine:
+1. Go to **Settings > Community Nodes**.
+2. Select **Install**.
+3. Enter `n8n-nodes-pagerduty-trigger` in **Enter npm package name**.
+4. Agree to the [risks](https://docs.n8n.io/integrations/community-nodes/risks/) of using community nodes: select **I understand the risks of installing unverified code from a public source**.
+5. Select **Install**.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 16. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-	```
-	npm install n8n -g
-	```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+After installing the node, you can use it like any other node. n8n displays the node in search results in the **Nodes** panel.
+
+### Manual installation
+
+To get started install the package in your n8n root directory:
+
+`npm install n8n-nodes-pagerduty-trigger`
 
 
-## Using this starter
+For Docker-based deployments, add the following line before the font installation command in your [n8n Dockerfile](https://github.com/n8n-io/n8n/blob/master/docker/images/n8n/Dockerfile):
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-    ```
-    git clone https://github.com/<your organization>/<your-repo-name>.git
-    ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+`RUN cd /usr/local/lib/node_modules/n8n && npm install n8n-nodes-pagerduty-trigger`
 
-## More information
+## Node Reference
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+## Credentials
+
+You can find authentication information for this node [here](https://docs.n8n.io/integrations/builtin/credentials/pagerduty/).
+
+## Events Supported
+
+The following resources and event types are available using [PagerDuty's Webhook Subscriptions API](https://developer.pagerduty.com/api-reference/b3A6MjkyNDc4NA-create-a-webhook-subscription). 
+
+### Incidents
+
+| Event                              | Description                                                                                |
+| ---------------------------------- | ------------------------------------------------------------------------------------------ |
+| [`Incident Acknowledged`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentacknowledged) | Triggered when an incident is wledged                                                      |
+| [`Incident Annotated`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentannotated) | Triggered when a note is added to an incident                                              |
+| [`Incident Delegated`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentdelegated) | Triggered when an incident has been reassigned to another escalation policy                |
+| [`Incident Escalated`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentescalated) | Triggered when an incident has been escalated to another user in the same escalation level |
+| [`Incident Reassigned`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentreassigned) | Triggered when an incident has been reassigned to another user                             |
+| [`Incident Reopened`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentreopened) | Triggered when an incident is reopened                                                     |
+| [`Incident Resolved`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentresolved) | Triggered when an incident has been resolved                                               |
+| [`Incident Status Update Published`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentstatus_update_published) | Triggered when a status update is added to an incident                                     |
+| [`Incident Triggered`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidenttriggered) | Triggered when an incident is newly created/triggered                                      |
+| [`Incident Unacknowledged`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentunacknowledged) | Triggered when an incident is unacknowledged                                               |
+| [`Incident Responder Added`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentresponderadded) | Triggered when a responder has been added to an incident                                   |
+| [`Incident Responder Replied`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentresponderreplied) | Triggered when a responder replies to a request                                            |
+| [`Incident Priority Updated`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#incidentpriority_updated) | Triggered when the priority of an incident has changed                                     |
+
+### Services
+
+| Event      | Description                         |
+| ---------- | ----------------------------------- |
+| [`Service Created`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#servicecreated)  | Triggered when a service is created |
+| [`Service Deleted`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#servicedeleted)  | Triggered when a service is deleted |
+| [`Service Updated`](https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#serviceupdated)  | Triggered when a service is updated |
+
+
+Additional event types may be added to this list over time.
+
+
+## Options
+
+### Custom Headers
+
+You can define optional headers that will be passed along with the payload to the destination URL. The header values are redacted in GET requests, but are not redacted on the webhook when delivered to trigger node. All header names must be unique.
+
+### Include Headers and Query Parameters
+
+By default, you'll receive the event body as your JSON. You can choose whether to return the full details of the request, including headers and query parameters instead of only the body.
+
+<details>
+<summary>
+<strong>Default JSON</strong>
+</summary>
+<pre>
+{
+	"event": {
+		"id": "01D8FYIJ20I4GKWYN0MVIPOX2F",
+		"event_type": "pagey.ping",
+		"resource_type": "pagey",
+		"occurred_at": "2022-10-01T02:29:54.441Z",
+		"agent": null,
+		"client": null,
+		"data": {
+			"message": "Hello from your friend Pagey!",
+			"type": "ping"
+		}
+	}
+}
+</pre>
+</details>
+
+<details>
+<summary>
+<strong>Headers and Query Parameters Included</strong>
+</summary>
+<pre>
+{
+	"body": {
+		"event": {
+			"id": "01D8FYLHB5WAOTUKW6FBWY4P3M",
+			"event_type": "pagey.ping",
+			"resource_type": "pagey",
+			"occurred_at": "2022-10-01T02:30:53.852Z",
+			"agent": null,
+			"client": null,
+			"data": {
+				"message": "Hello from your friend Pagey!",
+				"type": "ping"
+			}
+		}
+	},
+	"headers": {
+		"x-forwarded-for": "52.89.71.166",
+		"x-forwarded-proto": "https",
+		"x-forwarded-port": "443",
+		"host": "n8n.fye.dev",
+		"x-amzn-trace-id": "Root=1-6337a65e-4e98a58314bd053846fdf500",
+		"content-length": "228",
+		"accept": "application/json",
+		"x-webhook-id": "a3d6149f-7577-4e8c-bc7c-e0e80e84dda5",
+		"user-agent": "PagerDuty-Webhook/V3.0",
+		"x-pagerduty-signature": "v1=6786170fa823ba565f041fb9186719f29907e6460d33c2ce233abf676bdfe9e1",
+		"x-webhook-subscription": "PXSUI9H",
+		"content-type": "application/json"
+	},
+	"query": {}
+}
+</pre>
+</details>
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+MIT License
+
+Copyright (c) 2022 Nicholas Penree <nick@penree.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

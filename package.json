@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-pagerduty-trigger",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "n8n Trigger node for PagerDuty",
   "keywords": [
     "n8n-community-node-package"

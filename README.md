@@ -4,6 +4,7 @@
 
 This trigger node allows you to receive updates in your [n8n](https://www.n8n.io) workflows when significant events happen in your PagerDuty account. For example, when an incident triggers, escalates or resolves. See the `Events Supported` support section below for a full list of events.
 
+![PagerDuty Trigger node screenshot](./images/example.png)
 ## How to install
 
 ### Community Nodes (Recommended)
@@ -76,6 +77,8 @@ Additional event types may be added to this list over time.
 
 You can define optional headers that will be passed along with the payload to the destination URL. The header values are redacted in GET requests, but are not redacted on the webhook when delivered to trigger node. All header names must be unique.
 
+When sending custom headers, the JSON for the event will have headers and query parameters will always included.
+
 ### Include Headers and Query Parameters
 
 By default, you'll receive the event body as your JSON. You can choose whether to return the full details of the request, including headers and query parameters instead of only the body.
@@ -140,6 +143,14 @@ By default, you'll receive the event body as your JSON. You can choose whether t
 }
 </pre>
 </details>
+
+## Troubleshooting / Testing
+
+If you're having issues with the webhook subscriptions, you can review the webhook subscriptions in PagerDuty using the **Integrations** > **Generic Webhooks (v3)** menu.
+
+You send also send a test event to your listening trigger node here as well:
+
+![Manage webhook screenshot](./images/manage.png)
 
 ## License
 

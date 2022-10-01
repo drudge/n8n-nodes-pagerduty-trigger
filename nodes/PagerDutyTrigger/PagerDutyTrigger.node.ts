@@ -17,16 +17,19 @@ import { pagerDutyApiRequest, pagerDutyApiRequestAllItems } from './GenericFunct
 
 const debug = debuglog('n8n-nodes-pagerduty-trigger');
 
+const NODE_NAME = 'PagerDuty Trigger';
+
 export class PagerDutyTrigger implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'PagerDuty Trigger',
+		displayName: NODE_NAME,
 		name: 'pagerDutyTrigger',
 		icon: 'file:pagerDuty.svg',
 		group: ['trigger'],
 		version: 1,
 		description: 'Starts the workflow when PagerDuty events occur',
+		subtitle: `={{"${NODE_NAME}"}}`,
 		defaults: {
-			name: 'PagerDuty Trigger',
+			name: NODE_NAME,
 		},
 		inputs: [],
 		outputs: ['main'],
@@ -76,34 +79,37 @@ export class PagerDutyTrigger implements INodeType {
 				default: 'apiToken',
 			},
 			{
-				displayName: 'Events From',
+				displayName: 'Scope',
 				name: 'filter',
 				type: 'options',
 				default: 'account_reference',
-				description: 'Limt the events to a specific service or team',
+				description: 'Limit the events to a specific service or team. By default, events for the entire account are returned.',
 				options: [
 					{
 						name: 'Service',
 						value: 'service_reference',
+						description: 'Limit the events to a specific service',
 					},
 					{
 						name: 'Team',
 						value: 'team_reference',
+						description: 'Limit the events to a specific team',
 					},
 					{
 						name: 'Account',
 						value: 'account_reference',
+						description: 'Receive events from everything in the account',
 					},
 				],
 			},
 			{
 				displayName: 'Team Name or ID',
-				name: "teamId",
-				type: "options",
+				name: 'teamId',
+				type: 'options',
 				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
-				default: "",
+				default: '',
 				typeOptions: {
-					loadOptionsMethod: "getTeams",
+					loadOptionsMethod: 'getTeams',
 				},
 				required: true,
 				displayOptions: {
@@ -114,12 +120,12 @@ export class PagerDutyTrigger implements INodeType {
 			},
 			{
 				displayName: 'Service Name or ID',
-				name: "serviceId",
-				type: "options",
+				name: 'serviceId',
+				type: 'options',
 				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
-				default: "",
+				default: '',
 				typeOptions: {
-					loadOptionsMethod: "getServices",
+					loadOptionsMethod: 'getServices',
 				},
 				required: true,
 				displayOptions: {
@@ -217,42 +223,43 @@ export class PagerDutyTrigger implements INodeType {
 				],
 				required: true,
 				default: [],
-				description: 'The events to listen to',
+				description: 'Which event types will trigger the node. A subset of all <a href="https://developer.pagerduty.com/docs/ZG9jOjQ1MTg4ODQ0-overview#event-types">event types</a> may be provided if the destination is only interested in a limited set of events.',
 			},
 			{
-				displayName: "Options",
-				name: "options",
-				type: "collection",
-				placeholder: "Add Option",
+				displayName: 'Options',
+				name: 'options',
+				type: 'collection',
+				placeholder: 'Add Option',
+				description: 'Options to set',
 				default: {},
 				options: [
 					{
-						displayName: "Custom Headers",
-						name: "customHeaders",
-						placeholder: "Add Header",
-						type: "fixedCollection",
+						displayName: 'Custom Headers',
+						name: 'customHeaders',
+						placeholder: 'Add Header',
+						type: 'fixedCollection',
 						typeOptions: {
 							multipleValues: true,
 						},
-						description: 'The headers to send',
+						description: 'Optional headers to be set on the events when sent. The header values are redacted in GET requests, but are not redacted on the event when delivered.',
 						default: {},
 						options: [
 							{
-								name: "parameter",
-								displayName: "Header",
+								name: 'parameter',
+								displayName: 'Header',
 								values: [
 									{
-										displayName: "Name",
-										name: "name",
-										type: "string",
-										default: "",
+										displayName: 'Name',
+										name: 'name',
+										type: 'string',
+										default: '',
 										description: 'Name of the header',
 									},
 									{
-										displayName: "Value",
-										name: "value",
-										type: "string",
-										default: "",
+										displayName: 'Value',
+										name: 'value',
+										type: 'string',
+										default: '',
 										description: 'Value to set for the header',
 									},
 								],
@@ -265,7 +272,7 @@ export class PagerDutyTrigger implements INodeType {
 						type: 'boolean',
 						default: false,
 						description:
-							'Whether to return the full reponse (headers and query parameters) data instead of only the body',
+							'Whether to return the full request (headers and query parameters) in addition to the body',
 					},
 				],
 			},
@@ -357,6 +364,7 @@ export class PagerDutyTrigger implements INodeType {
 				}
 
 				const description = this.getNode().name as string;
+				const workflowName = this.getWorkflow().name as string;
 				const events = this.getNodeParameter('events', []);
 				const options = this.getNodeParameter('options', {}) as IDataObject;
 				const customHeaders = options.customHeaders as IDataObject;
@@ -378,7 +386,7 @@ export class PagerDutyTrigger implements INodeType {
 							url: webhookUrl,
 							custom_headers: customHeaders?.parameter || [],
 						},
-						description: `[N8N] ${description}`,
+						description: `[N8N] ${description} in ${workflowName}`,
 						events,
 						filter: {
 							type: filter,
@@ -437,6 +445,8 @@ export class PagerDutyTrigger implements INodeType {
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
 		const bodyData = this.getBodyData();
 		const options = this.getNodeParameter('options', {}) as IDataObject;
+		const headersObj = options.customHeaders as IDataObject || {};
+		const customHeaders = headersObj.parameter as IDataObject[] || [];
 
 		// Check if the webhook is only the ping from Github to confirm if it workshook_id
 		if (bodyData.hook_id !== undefined && bodyData.action === undefined) {
@@ -449,11 +459,10 @@ export class PagerDutyTrigger implements INodeType {
 		}
 
 		// Is a regular webhook call
-
-		// TODO: Add headers & requestPath
 		const returnData: IDataObject[] = [];
+		const shouldReturnFullRequest = options.fullRequest as boolean || customHeaders.length > 0;
 
-		returnData.push(options.fullRequest ? ({
+		returnData.push(shouldReturnFullRequest ? ({
 			body: bodyData,
 			headers: this.getHeaderData(),
 			query: this.getQueryData(),
